@@ -9,7 +9,7 @@ using System;
 
 namespace Colecao_Musica.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Colecao_MusicaBD))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
