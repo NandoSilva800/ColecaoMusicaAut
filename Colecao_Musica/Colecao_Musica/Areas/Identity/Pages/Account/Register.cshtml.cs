@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Colecao_Musica.Data;
 using Colecao_Musica.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -23,26 +24,39 @@ namespace Colecao_Musica.Areas.Identity.Pages.Account
         //private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        //private readonly IEmailSender _emailSender;
+
+        /// <summary>
+        /// atributo que referencia a Base de Dados do projeto
+        /// </summary>
+        private readonly Colecao_MusicaBD _context;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
-          //  SignInManager<IdentityUser> signInManager,
+            // SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            //IEmailSender emailSender)
+            Colecao_MusicaBD context)
         {
             _userManager = userManager;
-         //   _signInManager = signInManager;
+            //_signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            //_emailSender = emailSender;
+            _context = context;
+
         }
 
+
+        /// <summary>
+        /// Transporta dados entre o form e "código"
+        /// transporta dados entre browser e servidor
+        /// </summary>
         [BindProperty]          //Adiciona memória ao http
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
-     //   public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        //public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
         {
@@ -95,14 +109,49 @@ namespace Colecao_Musica.Areas.Identity.Pages.Account
                 
                 //cria um objeto tipo "user"
                 //Com os dados que é autentiticado
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email,
+                    LockoutEnd = new DateTime(DateTime.Now.Year + 10,
+                                          DateTime.Now.Month,
+                                          DateTime.Now.Day)
+                };
                
-                //vou tentar criar o utilizador
+                //vou criar o utilizador
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Utilizador criou nova conta com password.");
 
+
+                    try
+                    {
+                        // adicionar ao Role
+                        await _userManager.AddToRoleAsync(user, "Artista");
+                     
+                        // atribuir ao artista o ID do user q acabou de se criar
+                        Input.Artista.UserNameId = user.Id;
+
+
+                        // guardar os dados na BD
+                        await _context.AddAsync(Input.Artista);
+
+                        // consolidar a operação de guardar
+                        await _context.SaveChangesAsync();
+
+                     
+                        // redirecionar para a página de confirmação de criação de conta
+                        return RedirectToPage("RegisterConfirmation");
+                    }
+                    catch (Exception)
+                    {
+                        // houve um erro na criação de um Criador
+                        // Além da mensagem de erro,
+                        ModelState.AddModelError("", "Houve um erro com a criação do utilizador");
+                        //  deverá ser apagada o User q foi previamente criado
+                        await _userManager.DeleteAsync(user);
+                        // devolver os dados à página
+                        return Page();
+                    }
                     /*var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

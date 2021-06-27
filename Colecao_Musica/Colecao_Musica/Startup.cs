@@ -33,6 +33,7 @@ namespace Colecao_Musica
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>() // ativa a utilização de Roles
                 .AddEntityFrameworkStores<Colecao_MusicaBD>();
             services.AddControllersWithViews();
         }

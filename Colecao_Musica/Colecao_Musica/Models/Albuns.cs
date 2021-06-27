@@ -32,7 +32,7 @@ namespace Colecao_Musica.Models
         /// </summary>
         [Required(ErrorMessage = "Preenchimento obrigatório")]
         [StringLength(40, ErrorMessage = "O {0} não deve ter mais que {1} caracteres.")]
-        public string Titulo { get; set; }
+        public string Título { get; set; }
 
         /// <summary>
         /// Duração total de um album

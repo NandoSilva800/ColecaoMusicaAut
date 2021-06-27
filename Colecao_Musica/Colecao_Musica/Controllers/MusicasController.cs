@@ -11,7 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Colecao_Musica.Controllers
 {
-    [Authorize]
+    /// <summary>
+    /// Controller para efetuar a gestão de músicas
+    /// </summary>
+    [Authorize]// Só acessivel se autenticado
     public class MusicasController : Controller
     {
         /// <summary>
@@ -25,6 +28,7 @@ namespace Colecao_Musica.Controllers
         }
 
         // GET: Musicas
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var colecao_MusicaBD = _context.Musicas.Include(m => m.Artista);

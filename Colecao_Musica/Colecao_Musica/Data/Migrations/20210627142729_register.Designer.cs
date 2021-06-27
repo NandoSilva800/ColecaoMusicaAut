@@ -4,14 +4,16 @@ using Colecao_Musica.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Colecao_Musica.Data.Migrations
 {
     [DbContext(typeof(Colecao_MusicaBD))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210627142729_register")]
+    partial class register
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,22 +341,6 @@ namespace Colecao_Musica.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "a",
-                            ConcurrencyStamp = "8758e080-27fa-4326-b961-2438c47537cc",
-                            Name = "Artista",
-                            NormalizedName = "ARTISTA"
-                        },
-                        new
-                        {
-                            Id = "g",
-                            ConcurrencyStamp = "d21f13b0-c81f-4f5c-80a7-2b3cc7ffac67",
-                            Name = "Gestor",
-                            NormalizedName = "GESTOR"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
