@@ -4,8 +4,10 @@
     ViewData["Title"] = "Adicionar album";
 }
 
-<h1>Adicionar</h1>
-
+@if (User.Identity.IsAuthenticated)
+{
+    <h1>Adicionar</h1>
+}
 <h4>Album</h4>
 <hr />
 <div class="row">
@@ -57,10 +59,10 @@
                 </select>
                 <span asp-validation-for="ArtistasFK" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <input type="submit" value="Adicionar" class="btn btn-primary" />
-            </div>
+            @if (User.Identity.IsAuthenticated) {
+                <div class="form-group">
+                    <input type="submit" value="Adicionar" class="btn btn-primary" />
+                </div>}
         </form>
     </div>
 </div>

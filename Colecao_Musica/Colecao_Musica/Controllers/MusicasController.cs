@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Colecao_Musica.Data;
 using Colecao_Musica.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Colecao_Musica.Controllers
 {
+    [Authorize]
     public class MusicasController : Controller
     {
         /// <summary>

@@ -7,8 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Colecao_Musica.Data;
 using Colecao_Musica.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Colecao_Musica.Controllers
 {
@@ -16,29 +20,68 @@ namespace Colecao_Musica.Controllers
     /// <summary>
     /// Controller para efetuar a gestão de Albuns de musica
     /// </summary>
-
-    ///[Authorize]
-
+    [Authorize]
     public class AlbunsController : Controller
     {
+        /// <summary>
+        /// Atributo que referencia a BD do projeto
+        /// </summary>
         private readonly Colecao_MusicaBD _context;
-        
 
-        public AlbunsController(Colecao_MusicaBD context)
+        /// <summary>
+        /// Atributo que guarda nele os dados do Servidor
+        /// </summary>
+        private readonly IWebHostEnvironment _dadosServidor;
+
+        /// <summary>
+        /// Atributo que irá receber todos os dados referentes à
+        /// pessoa q se autenticou no sistema
+        /// </summary>
+        private readonly UserManager<IdentityUser> _userManager;
+
+
+        public AlbunsController(Colecao_MusicaBD context,
+            IWebHostEnvironment dadosServidor,
+         UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _dadosServidor = dadosServidor;
+            _userManager = userManager;
         }
+            
+         
+
+
 
         // GET: Albuns
+        /// <summary>
+        /// Lista os albuns
+        /// </summary>
         public async Task<IActionResult> Index()
         {
-
             var colecaoAlbuns = await _context.Albuns.Include(a => a.Artista).Include(a => a.Genero).ToListAsync();
-            return View(colecaoAlbuns);
-        }
+            
+            //var colecaoAlbunsAut = await _context.Albuns.Include(a => a.ArtistasFK).Include(a => a.)
 
-        // GET: Albuns/Details/5
-        public async Task<IActionResult> Details(int? id)
+            return View(colecaoAlbuns);
+        
+            //-----------Autenticação----------
+        // var. auxiliar
+       // string username = _userManager.GetUserId(User);
+
+         /*  var listaAlbuns = (from a in _context.Albuns
+                              on a.Id equals r.Id
+                              where r.UserNameId == UserManager.GetUserId(user)
+                              select a)
+                              .ToListAsync();*/
+    }
+        //-----------------------------------------------
+
+
+
+    // GET: Albuns/Details/5
+
+    public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {

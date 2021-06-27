@@ -47,17 +47,26 @@ namespace Colecao_Musica.Data
             );
             
             modelBuilder.Entity<Artistas>().HasData(
-               new Artistas { Id = 1, Nome = "Eagles", Nacionalidade ="USA", Url = "https://eagles.com/" }
+               new Artistas { Id = 1, Nome = "Eagles", Nacionalidade ="USA", Url = "https://eagles.com/" },
+               new Artistas { Id = 2, Nome = "Queen", Nacionalidade = "UK", Url = "https://queen.com/" },
+               new Artistas { Id = 3, Nome = "Pink Floyd", Nacionalidade = "UK", Url = "https://pinkfloyd.com/" },
+               new Artistas { Id = 4, Nome = "Dire Straits", Nacionalidade = "UK", Url = "https://direstraits.com/" },
+               new Artistas { Id = 5, Nome = "Led Zeppelin", Nacionalidade = "UK", Url = "https://ledzeppelin.com/" },
+               new Artistas { Id = 6, Nome = "AC/DC", Nacionalidade = "Australia", Url = "https://acdc.com/" }
             );
 
             modelBuilder.Entity<Albuns>().HasData(
-               new Albuns { Id = 1, Titulo = "Hotel Califórnia", Duracao = "43", Ano = "1976", Editora = "Asylom Records", NrFaixas = "9", Cover ="HotelCaliforniaAlbumCover.png", GenerosFK = 1, ArtistasFK = 1 }
-            );
+               new Albuns { Id = 1, Titulo = "Hotel Califórnia", Duracao = "43", Ano = "1976", Editora = "Asylom Records", NrFaixas = "9", Cover ="HotelCaliforniaAlbumCover.png", GenerosFK = 1, ArtistasFK = 1 },
+                new Albuns { Id = 2, Titulo = "A night at Opera", Duracao = "60", Ano = "1996", Editora = "Asylom Records", NrFaixas = "9", Cover = "anightoperaCover.png", GenerosFK = 1, ArtistasFK = 2 },
+              new Albuns { Id = 3, Titulo = "Division Bell", Duracao = "80", Ano = "1986", Editora = "Asylom Records", NrFaixas = "9", Cover = "divisionbellCover.png", GenerosFK = 1, ArtistasFK = 3 }
+                );
 
           
 
             modelBuilder.Entity<Musicas>().HasData(
-               new Musicas { Id = 1, Titulo = "Hotel Califórnia", Duracao = "6", Ano = "1976", ArtistasFK = 1  }
+               new Musicas { Id = 1, Titulo = "Hotel Califórnia", Duracao = "4", Ano = "1976", ArtistasFK = 1  },
+               new Musicas { Id = 2, Titulo = "Bhoeamian Rapsody", Duracao = "7", Ano = "1996", ArtistasFK = 2 },
+               new Musicas { Id = 3, Titulo = "Divisio Bell", Duracao = "5", Ano = "1986", ArtistasFK = 3 }
 
             );
 

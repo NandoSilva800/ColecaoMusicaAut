@@ -38,9 +38,11 @@
                     <option value="">Selecione um Artista, por favor.</option>
                 </select>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Adicionar" class="btn btn-primary" />
-            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="form-group">
+                    <input type="submit" value="Adicionar" class="btn btn-primary" />
+                </div>}
         </form>
     </div>
 </div>

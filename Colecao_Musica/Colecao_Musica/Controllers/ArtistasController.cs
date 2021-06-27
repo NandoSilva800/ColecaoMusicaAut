@@ -7,9 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Colecao_Musica.Data;
 using Colecao_Musica.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Colecao_Musica.Controllers
 {
+
+    /// <summary>
+    /// Controller para efetuar a gestão dos artistas
+    /// </summary>
+    [Authorize]
     public class ArtistasController : Controller
     {
         private readonly Colecao_MusicaBD _context;
