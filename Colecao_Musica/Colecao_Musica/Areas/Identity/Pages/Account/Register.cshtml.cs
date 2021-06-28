@@ -106,10 +106,13 @@ namespace Colecao_Musica.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 //Se entrei os dados são válidos.
-                
+
                 //cria um objeto tipo "user"
                 //Com os dados que é autentiticado
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email,
+                var user = new IdentityUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
                     LockoutEnd = new DateTime(DateTime.Now.Year + 10,
                                           DateTime.Now.Month,
                                           DateTime.Now.Day)

@@ -25,18 +25,23 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nome)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nacionalidade)
-                    </td>
-                    <td>
-                        <a href="url">@item.Url</a>
-                    </td>
+            <tr>
+                <td>
+                    <input type="checkbox"
+                           name="listaUsersDesbloquear"
+                           value="@item.UserNameId" />
+                </td>
 
-                </tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nacionalidade)
+                </td>
+                <td>
+                    <a href="url">@item.Url</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

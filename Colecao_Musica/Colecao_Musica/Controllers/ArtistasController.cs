@@ -38,29 +38,57 @@ namespace Colecao_Musica.Controllers {
             }
 
             // GET: Artistas
-            public async Task<IActionResult> Index()
-            {
+            public async Task<IActionResult> Index(){
                 return View(await _context.Artistas.ToListAsync());
             }
 
             // GET: Artistas/Details/5
-            public async Task<IActionResult> Details(int? id)
-            {
-                if (id == null)
-                {
+            public async Task<IActionResult> Details(int? id){
+                if (id == null){
                     return NotFound();
                 }
 
                 var artistas = await _context.Artistas
                     .FirstOrDefaultAsync(m => m.Id == id);
-                if (artistas == null)
-                {
+                if (artistas == null){
                     return NotFound();
                 }
 
                 return View(artistas);
             }
 
+
+        /// <summary>
+        /// Apresenta a janela com a lista dos Utilizadores criados
+        /// e não validados
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Gestor")]
+        /*
+         [Authorize(Roles = "Gestor")]           --> só users do tipo Gestor podem aceder
+         [Authorize(Roles = "Gestor,Cliente")]   --> só users do tipo Gestor OU do tipo Cliente podem aceder
+
+         [Authorize(Roles = "Gestor")]
+         [Authorize(Roles = "Cliente")]          --> só users do tipo Gestor E do tipo Cliente podem aceder
+        */
+        public async Task<IActionResult> DesbloquearUtilizadores()
+        {
+            // Tarefas
+            // 1. listar os Utilizadores bloqueados (email não validado / data bloqueio > data atual)
+            // 2. listar os Artistas associados a esses Utilizadores
+
+            // Tarefa 1.
+            var listaIdUtilizadores = _userManager.Users
+                                              .Where(u => !u.EmailConfirmed || u.LockoutEnd > DateTime.Now)
+                                              .Select(u => u.Id);
+
+            // Tarefa 2.
+            var listaArtistas = await _context.Artistas.Where(a => listaIdUtilizadores.Contains(a.UserNameId))
+                                                    .ToListAsync();
+
+            // enviar a lista de criadores para a View
+            return View(listaArtistas);
+        }
 
         /// <summary>
         /// Após a listagem dos Utilizadores a desbloquear,
@@ -102,16 +130,14 @@ namespace Colecao_Musica.Controllers {
                     }
                     catch (Exception)
                     {
-                        // enviar msg de erro ao utilizador
-                        // devolver para uma view
+                      
                     }
 
                 }
             }
 
-            // eventualmente, gerar uma mensagem de sucesso para o utilizador
 
-            // devolver à view
+            // retorna à view
             return RedirectToAction("Index", "Home");
         }
 
@@ -167,28 +193,21 @@ namespace Colecao_Musica.Controllers {
             // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(int id, [Bind("Nome,Nacionalidade,Url")] Artistas artistas)
-            {
-                if (id != artistas.Id)
-                {
+            public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Nacionalidade,Url")] Artistas artistas) {
+                if (id != artistas.Id){
                     return NotFound();
                 }
 
-                if (ModelState.IsValid)
-                {
-                    try
-                    {
+                if (ModelState.IsValid) {
+                    try {
                         _context.Update(artistas);
                         await _context.SaveChangesAsync();
                     }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!ArtistasExists(artistas.Id))
-                        {
+                    catch (DbUpdateConcurrencyException) {
+                        if (!ArtistasExists(artistas.Id)) {
                             return NotFound();
                         }
-                        else
-                        {
+                        else{
                             throw;
                         }
                     }
@@ -198,17 +217,14 @@ namespace Colecao_Musica.Controllers {
             }
 
             // GET: Artistas/Delete/5
-            public async Task<IActionResult> Delete(int? id)
-            {
-                if (id == null)
-                {
+            public async Task<IActionResult> Delete(int? id) {
+                if (id == null) {
                     return NotFound();
                 }
 
                 var artistas = await _context.Artistas
                     .FirstOrDefaultAsync(m => m.Id == id);
-                if (artistas == null)
-                {
+                if (artistas == null) {
                     return NotFound();
                 }
 
@@ -218,8 +234,7 @@ namespace Colecao_Musica.Controllers {
             // POST: Artistas/Delete/5
             [HttpPost, ActionName("Delete")]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> DeleteConfirmed(int id)
-            {
+            public async Task<IActionResult> DeleteConfirmed(int id) {
                 var artistas = await _context.Artistas.FindAsync(id);
                 _context.Artistas.Remove(artistas);
                 await _context.SaveChangesAsync();
