@@ -69,12 +69,12 @@ namespace Colecao_Musica.Controllers
             //-----------Autenticação----------
            
             // var. auxiliar
-            string username = _userManager.GetUserId(User);
+            string user = _userManager.GetUserId(User);
 
             //Quais os albuns do artista que se autenticou
             var listaAlbuns = (from a in _context.Albuns
-                             join r in _context.Artistas on a.ArtistasFK equals  r.Id
-                              where r.UserNameId == username
+                             join r in _context.Artistas on a.ArtistasFK equals r.Id
+                              where r.UserNameId == user
                               select a.Id)                             
                              .ToListAsync();
             

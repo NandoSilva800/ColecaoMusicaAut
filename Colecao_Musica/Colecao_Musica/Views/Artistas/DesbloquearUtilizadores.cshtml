@@ -1,53 +1,40 @@
 ﻿@model IEnumerable<Colecao_Musica.Models.Artistas>
 
 @{
-    ViewData["Title"] = "Desbloquear utilizadores";
+    ViewData["Title"] = "Desbloquear Utilizadores";
 }
 
-<h1>Desbloquear Utilizadores</h1>
+<h1>DesbloquearUtilizadores</h1>
 
- <form asp-action="DesbloquearUtilizadores" method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Nome)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Nacionalidade)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Url)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-            <tr>
-                <td>
-                    <input type="checkbox"
-                           name="listaUsersDesbloquear"
-                           value="@item.UserNameId" />
-                </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nacionalidade)
-                </td>
-                <td>
-                    <a href="url">@item.Url</a>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-
-    <input type="submit"
-           class="btn"
-           value="Actualizar dados dos artistas" />
-
-</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nacionalidade)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Url)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nacionalidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Url)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
