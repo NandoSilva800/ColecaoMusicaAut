@@ -36,7 +36,6 @@ namespace Colecao_Musica.Controllers
         private readonly UserManager<IdentityUser> _userManager;
 
 
-
         public MusicasController(Colecao_MusicaBD context, IWebHostEnvironment dadosServidor,
          UserManager<IdentityUser> userManager){
             _context = context;
@@ -45,17 +44,22 @@ namespace Colecao_Musica.Controllers
         }
 
         // GET: Musicas
+        /// <summary>
+        /// Lista as músicas
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Index()  
         {
             //var colecao_MusicaBD = _context.Musicas.Include(m => m.Artista);
             //return View(await colecao_MusicaBD.ToListAsync());
 
-            var listaMusicas = (from m in _context.Musicas
+            var listaMusicas = await (from m in _context.Musicas
                                join r in _context.Artistas on m.ArtistasFK equals r.Id
                                where r.UserNameId == _userManager.GetUserId(User)
                                select m)
-                               .OrderBy(m => m.Título);
+                               .OrderBy(m => m.Título)
+                               .ToListAsync();
 
             //ViewData["ArtistasFK"] = new SelectList(listaMusicas, "Id", "Título");
             return View(listaMusicas);
@@ -116,7 +120,7 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Título,Duracao,Ano,Compositor,ArtistasFK")] Musicas musicas)
+        public async Task<IActionResult> Create([Bind("Título,Duracao,Ano,Compositor")] Musicas musicas)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +128,7 @@ namespace Colecao_Musica.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", musicas.ArtistasFK);
+            //ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", musicas.ArtistasFK);
             return View(musicas);
         }
 
@@ -141,7 +145,7 @@ namespace Colecao_Musica.Controllers
             {
                 return NotFound();
             }
-            ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", musicas.ArtistasFK);
+            //ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", musicas.ArtistasFK);
             return View(musicas);
         }
 

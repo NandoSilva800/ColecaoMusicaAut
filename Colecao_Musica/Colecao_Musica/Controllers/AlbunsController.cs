@@ -7,16 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Colecao_Musica.Data;
 using Colecao_Musica.Models;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-
 namespace Colecao_Musica.Controllers
 {
-
     /// <summary>
     /// Controller para efetuar a gestão de Albuns de musica
     /// </summary>
@@ -42,17 +38,13 @@ namespace Colecao_Musica.Controllers
 
         public AlbunsController(Colecao_MusicaBD context,
             IWebHostEnvironment dadosServidor,
-            UserManager<IdentityUser> userManager)
-            {
+            UserManager<IdentityUser> userManager) {
             _context = context;
             _dadosServidor = dadosServidor;
             _userManager = userManager;
             }
             
-         
-
-
-
+ 
         // GET: Albuns
         /// <summary>
         /// Lista os albuns
@@ -60,7 +52,7 @@ namespace Colecao_Musica.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            //var colecaoAlbuns = await _context.Albuns.Include(a => a.Artista).Include(a => a.Genero).ToListAsync();
+            var colecaoAlbuns = await _context.Albuns.Include(a => a.Artista).Include(a => a.Genero).ToListAsync();
             
             //var colecaoAlbunsAut = await _context.Albuns.Include(a => a.ArtistasFK).Include(a => a.)
 
@@ -80,9 +72,6 @@ namespace Colecao_Musica.Controllers
 
            // var listaAlbuns = new ListarAlbunsViewModel { ListaDeAlbuns = lista };
            
-            
-            
-
             return View(listaAlbuns);
         }
         //-----------------------------------------------
@@ -131,19 +120,21 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( [Bind("Título,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK,ArtistasFK")]Albuns album)
+        public async Task<IActionResult> Create( [Bind("Id,Título,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK")]Albuns albuns)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(album);
+                _context.Add(albuns);
 
+                //Commit
                 await _context.SaveChangesAsync();
+                // redireciona a execução do código para a método Index    
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["ArtistasFK"] = new SelectList(_context.Artistas.OrderBy(a=>a.Nome), "Id", "Nome", album.ArtistasFK);
-            ViewData["GenerosFK"] = new SelectList(_context.Generos, "Id", "Designacao", album.GenerosFK);
-            return View(album);
+            //ViewData["ArtistasFK"] = new SelectList(_context.Artistas.OrderBy(a=>a.Nome), "Id", "Nome", album.ArtistasFK);
+            ViewData["GenerosFK"] = new SelectList(_context.Generos, "Id", "Designacao", albuns.GenerosFK);
+            return View(albuns);
         }
 
         // GET: Albuns/Edit/5
@@ -159,7 +150,7 @@ namespace Colecao_Musica.Controllers
             {
                 return NotFound();
             }
-            ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", albuns.ArtistasFK);
+            //ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", albuns.ArtistasFK);
             ViewData["GenerosFK"] = new SelectList(_context.Generos, "Id", "Designacao", albuns.GenerosFK);
             return View(albuns);
         }
@@ -169,7 +160,7 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Titulo,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK,ArtistasFK")] Albuns albuns)
+        public async Task<IActionResult> Edit(int id, [Bind("Titulo,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK")] Albuns albuns)
         {
             if (id != albuns.Id)
             {
@@ -196,7 +187,7 @@ namespace Colecao_Musica.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", albuns.ArtistasFK);
+            //ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome", albuns.ArtistasFK);
             ViewData["GenerosFK"] = new SelectList(_context.Generos, "Id", "Designacao", albuns.GenerosFK);
             return View(albuns);
         }
