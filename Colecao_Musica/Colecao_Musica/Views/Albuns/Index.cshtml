@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Colecao_Musica.Models.Albuns>
+@* esta linha identifica a origem e o tipo dos dados q chegam à View *@
 
 @{
     ViewData["Title"] = "Index";
@@ -35,49 +36,46 @@
             <th>
                 @Html.DisplayNameFor(model => model.Genero)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Artista)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Título)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Duracao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NrFaixas)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ano)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Editora)
-                </td>
-                <td>
-                    <img src="~/coverAlbum/@item.Cover" height="50" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Genero.Designacao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Artista.Nome)
-                </td>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>
-                    </td>
-                }
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Título)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duracao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NrFaixas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ano)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Editora)
+            </td>
+            <td>
+                <img src="~/coverAlbum/@item.Cover" height="50" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genero.Designacao)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Artista.Nome)
+            </td>*@
+             <td>
+               <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+               <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+               <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>   
+             </td>   
+        </tr>
         }
     </tbody>
-</table>
+ </table>

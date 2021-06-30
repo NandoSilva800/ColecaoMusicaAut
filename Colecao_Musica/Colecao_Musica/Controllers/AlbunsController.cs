@@ -60,24 +60,29 @@ namespace Colecao_Musica.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var colecaoAlbuns = await _context.Albuns.Include(a => a.Artista).Include(a => a.Genero).ToListAsync();
+            //var colecaoAlbuns = await _context.Albuns.Include(a => a.Artista).Include(a => a.Genero).ToListAsync();
             
             //var colecaoAlbunsAut = await _context.Albuns.Include(a => a.ArtistasFK).Include(a => a.)
 
-            return View(colecaoAlbuns);
+            //return View(colecaoAlbuns);
         
-            //-----------Autenticação----------
+            //-----------View Index com Autenticação----------
            
             // var. auxiliar
-            string user = _userManager.GetUserId(User);
+            //string username = _userManager.GetUserId(User);
 
             //Quais os albuns do artista que se autenticou
             var listaAlbuns = (from a in _context.Albuns
-                             join r in _context.Artistas on a.ArtistasFK equals r.Id
-                              where r.UserNameId == user
-                              select a.Id)                             
-                             .ToListAsync();
+                               join r in _context.Artistas on a.ArtistasFK equals r.Id
+                               where r.UserNameId == _userManager.GetUserId(User)
+                               select a)
+                             .OrderBy(a => a.Título);
+
+           // var listaAlbuns = new ListarAlbunsViewModel { ListaDeAlbuns = lista };
+           
             
+            
+
             return View(listaAlbuns);
         }
         //-----------------------------------------------
@@ -96,7 +101,7 @@ namespace Colecao_Musica.Controllers
             var albuns = await _context.Albuns
                 .Include(a => a.Artista)
                 .Include(a => a.Genero)
-               .FirstOrDefaultAsync(m => m.Id == id);
+               .FirstOrDefaultAsync(a => a.Id == id);
             if (albuns == null)
             {
                 return NotFound();
@@ -107,7 +112,15 @@ namespace Colecao_Musica.Controllers
         // GET: Albuns/Create
         public IActionResult Create()
         {
-            ViewData["ArtistasFK"] = new SelectList( _context.Artistas.OrderBy(a=>a.Nome), "Id", "Nome");
+            var listaAlbuns = (from a in _context.Albuns
+                               join r in _context.Artistas on a.ArtistasFK equals r.Id
+                               where r.UserNameId == _userManager.GetUserId(User)
+                               select a).OrderBy(a => a.Título);
+                                
+                               
+
+
+            //ViewData["ArtistasFK"] = new SelectList( _context.Artistas.OrderBy(a=>a.Nome), "Id", "Nome");
             ViewData["GenerosFK"] = new SelectList(_context.Generos, "Id", "Designacao");
 
             return View();
@@ -118,11 +131,12 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( [Bind("Titulo,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK,ArtistasFK")]Albuns album)
+        public async Task<IActionResult> Create( [Bind("Título,Duracao,NrFaixas,Ano,Editora,Cover,GenerosFK,ArtistasFK")]Albuns album)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(album);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -173,6 +173,7 @@ namespace Colecao_Musica.Controllers {
 
 
             // GET: Artistas/Edit/5
+            [Authorize(Roles = "Gestor")]
             public async Task<IActionResult> Edit(int? id)
             {
                 if (id == null)
@@ -192,6 +193,7 @@ namespace Colecao_Musica.Controllers {
             // To protect from overposting attacks, enable the specific properties you want to bind to.
             // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
+            [Authorize(Roles = "Gestor")]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Nacionalidade,Url")] Artistas artistas) {
                 if (id != artistas.Id){
@@ -217,6 +219,7 @@ namespace Colecao_Musica.Controllers {
             }
 
             // GET: Artistas/Delete/5
+            [Authorize(Roles = "Gestor")]
             public async Task<IActionResult> Delete(int? id) {
                 if (id == null) {
                     return NotFound();
@@ -233,6 +236,7 @@ namespace Colecao_Musica.Controllers {
 
             // POST: Artistas/Delete/5
             [HttpPost, ActionName("Delete")]
+            [Authorize(Roles = "Gestor")]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> DeleteConfirmed(int id) {
                 var artistas = await _context.Artistas.FindAsync(id);

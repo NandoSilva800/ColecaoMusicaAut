@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Colecao_Musica.Data;
 using Colecao_Musica.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace Colecao_Musica.Controllers
 {
@@ -22,18 +24,46 @@ namespace Colecao_Musica.Controllers
         /// </summary>
         private readonly Colecao_MusicaBD _context;
 
-        public MusicasController(Colecao_MusicaBD context)
-        {
+        /// <summary>
+        /// Atributo que guarda nele os dados do Servidor
+        /// </summary>
+        private readonly IWebHostEnvironment _dadosServidor;
+
+        /// <summary>
+        /// Atributo que irá receber todos os dados referentes à
+        /// pessoa q se autenticou no sistema
+        /// </summary>
+        private readonly UserManager<IdentityUser> _userManager;
+
+
+
+        public MusicasController(Colecao_MusicaBD context, IWebHostEnvironment dadosServidor,
+         UserManager<IdentityUser> userManager){
             _context = context;
+            _dadosServidor = dadosServidor;
+            _userManager = userManager;
         }
 
         // GET: Musicas
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()  
         {
-            var colecao_MusicaBD = _context.Musicas.Include(m => m.Artista);
-            return View(await colecao_MusicaBD.ToListAsync());
+            //var colecao_MusicaBD = _context.Musicas.Include(m => m.Artista);
+            //return View(await colecao_MusicaBD.ToListAsync());
+
+            var listaMusicas = (from m in _context.Musicas
+                               join r in _context.Artistas on m.ArtistasFK equals r.Id
+                               where r.UserNameId == _userManager.GetUserId(User)
+                               select m)
+                               .OrderBy(m => m.Título);
+
+            //ViewData["ArtistasFK"] = new SelectList(listaMusicas, "Id", "Título");
+            return View(listaMusicas);
+
         }
+       
+
+    
 
         // GET: Musicas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -59,6 +89,26 @@ namespace Colecao_Musica.Controllers
         {
             ViewData["ArtistasFK"] = new SelectList(_context.Artistas, "Id", "Nome");
             return View();
+
+ 
+
+            // var. auxiliar
+            //string user = _userManager.GetUserId(User);
+
+            //Quais os albuns do artista que se autenticou
+ 
+            //var listaAlbuns = (from a in _context.Albuns
+                               //join r in _context.artistas on a.artistasfk equals r.id
+                               //where r.usernameid == _usermanager.getuserid(user)
+                               //select a).orderby(a => a.título);
+
+            // devolver o controlo à View
+            // prepara os dados a serem enviados para a View
+            // para a Dropdown
+            //viewdata["artistafk"] = new selectlist(artistas, "id", "título");
+            //return view();
+
+
         }
 
         // POST: Musicas/Create
@@ -66,7 +116,7 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Titulo,Duracao,Ano,Compositor,ArtistasFK")] Musicas musicas)
+        public async Task<IActionResult> Create([Bind("Título,Duracao,Ano,Compositor,ArtistasFK")] Musicas musicas)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +150,7 @@ namespace Colecao_Musica.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Titulo,Duracao,Ano,Compositor,ArtistasFK")] Musicas musicas)
+        public async Task<IActionResult> Edit(int id, [Bind("Título,Duracao,Ano,Compositor,ArtistasFK")] Musicas musicas)
         {
             if (id != musicas.Id)
             {
